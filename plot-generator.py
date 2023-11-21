@@ -1,16 +1,28 @@
 import argparse
 from util.reader import load_dataset
 from loguru import logger
-
-"""
-Entry point to the plot generator
-"""
-
+from util.filter import filter_by_column
+from util.plotting import plot_coordinates
 
 def main():
+    """
+    Entry point of the script. Generates plots for Carla-Sumo data.
+
+    This method loads the dataset, filters the data, and generates plots based on the filtered data.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     logger.critical("Carla-Sumo - Script plot generation")
-    all_dataset = load_dataset(arguments.csv_file)
-    nearby_dataset = load_dataset(arguments.nearby_csv_file, event_file=False)
+    all_dataframe = load_dataset(arguments.csv_file)
+    nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
+    carla_ego_dataframe = filter_by_column(all_dataframe, "Role", "hero")
+
+    plot_coordinates(carla_ego_dataframe)
+
 
 
 if __name__ == "__main__":

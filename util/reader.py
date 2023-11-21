@@ -33,12 +33,8 @@ cols_nearby = [
 ]
 
 
-"""
-load_dataset opens a csv and returns a DataSet
-"""
-
-
 def load_dataset(csv_name, event_file=True):
+    """Load_dataset opens a csv and returns a DataSet"""
     # This second parent is because we are inside `util`
     HERE = Path(__file__).parent.parent
     INPUT_FOLDER = HERE / "input"
@@ -48,15 +44,13 @@ def load_dataset(csv_name, event_file=True):
 
     dataframe_read = pd.read_csv(
         INPUT_FOLDER / csv_name,
-        encoding='unicode_escape',
+        encoding="unicode_escape",
         converters={"Model": str.lower, "Role": str.lower},
         usecols=colums,
     )
 
     logger.info(
-        "{} OF {}: {}".format(
-            "NUMBER OF ROWS", csv_name, dataframe_read.shape[0]
-        )
+        "{} OF {}: {}".format("NUMBER OF RECORDS", csv_name, dataframe_read.shape[0])
     )
 
     return dataframe_read
