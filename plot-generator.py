@@ -14,7 +14,6 @@ if __name__ == "__main__":
         "--path-carla",
         type=str,
         help="path to carla file",
-        default="No",
     )
     arguments = argparser.parse_args()
 
