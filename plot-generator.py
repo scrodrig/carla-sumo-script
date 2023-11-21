@@ -21,7 +21,7 @@ def main():
     nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
     carla_ego_dataframe = filter_by_column(all_dataframe, "Role", "hero")
 
-    plot_coordinates(carla_ego_dataframe)
+    plot_coordinates(carla_ego_dataframe, ego_title="hero")
 
 
 
