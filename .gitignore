@@ -229,3 +229,5 @@ pyrightconfig.json
 
 ##ignore this where csvs are
 data/
+input/
+output/
