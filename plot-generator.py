@@ -3,9 +3,7 @@ from util.reader import load_dataset
 
 def main():
     print("Carla-Sumo - Script plot generation")
-    print("The variable __name__ tells me which context this file is running in.")
     print("The value of __name__ is:", repr(__name__))
-    # print("--path-carla", arguments.path_carla, sep=" -> ")
     path = load_dataset(arguments)
     print("==>", path)
 
