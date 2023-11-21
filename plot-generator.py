@@ -1,11 +1,11 @@
 import argparse
-from util.reader import load_dataset 
+from util.reader import load_dataset
+from loguru import logger
+
 
 def main():
-    print("Carla-Sumo - Script plot generation")
-    print("The value of __name__ is:", repr(__name__))
+    logger.critical("Carla-Sumo - Script plot generation")
     path = load_dataset(arguments)
-    print("==>", path)
 
 
 if __name__ == "__main__":
