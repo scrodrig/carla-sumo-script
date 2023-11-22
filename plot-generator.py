@@ -1,7 +1,7 @@
 import argparse
 from util.reader import load_dataset
 from loguru import logger
-from util.filter import filter_by_column
+from util.filter import filter_by_column, filter_carla_id_by_lowest_distances
 from util.plotting import plot_coordinates
 
 def main():
@@ -20,7 +20,7 @@ def main():
     all_dataframe = load_dataset(arguments.csv_file)
     nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
     carla_ego_dataframe = filter_by_column(all_dataframe, "Role", "hero")
-
+    filter_carla_id_by_lowest_distances(nearby_dataframe, 3)
     plot_coordinates(carla_ego_dataframe, ego_title="hero")
 
 
