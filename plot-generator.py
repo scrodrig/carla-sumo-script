@@ -20,7 +20,7 @@ def main():
     all_dataframe = load_dataset(arguments.csv_file)
     nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
     carla_ego_dataframe = filter_by_column(all_dataframe, "Role", "hero")
-    filter_carla_id_by_lowest_distances(nearby_dataframe, 3)
+    filter_carla_id_by_lowest_distances(nearby_dataframe, arguments.nearby_vehicles)
     plot_coordinates(carla_ego_dataframe, ego_title="hero")
 
 
@@ -36,6 +36,12 @@ if __name__ == "__main__":
         "--nearby-csv-file",
         type=str,
         help="nearby csv file for all events",
+    )
+    argparser.add_argument(
+        "--nearby-vehicles",
+        type=int,
+        help="number of vehicles nearby to plot",
+        default=3,
     )
     arguments = argparser.parse_args()
 
