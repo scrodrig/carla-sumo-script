@@ -73,3 +73,20 @@ def __get_nearby_carla_ids(df, num_records):
         df.groupby("CarlaId").head(num_records)["CarlaId"].unique()
     )
     return unique_carla_ids
+
+
+def get_lowest_time(df):
+    """
+    Get the lowest "time" in the whole DataFrame.
+
+    Parameters:
+      df (pandas.DataFrame): The DataFrame to be processed.
+
+    Returns:
+      float: The lowest "time" value.
+
+    """
+    lowest_time = df["time"].min()
+    return lowest_time
+
+
