@@ -1,8 +1,9 @@
 import argparse
 from util.reader import load_dataset
 from loguru import logger
-from util.filter import filter_by_column, filter_carla_id_by_lowest_distances
-from util.plotting import plot_coordinates
+from util.filter import filter_by_column, filter_carla_id_by_lowest_distances, __get_nearby_carla_ids
+from util.plotting import plot_coordinates_individual
+from util.color import PlotColor
 
 def main():
     """
@@ -19,9 +20,16 @@ def main():
     logger.critical("Carla-Sumo - Script plot generation")
     all_dataframe = load_dataset(arguments.csv_file)
     nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
-    carla_ego_dataframe = filter_by_column(all_dataframe, "Role", "hero")
-    filter_carla_id_by_lowest_distances(nearby_dataframe, arguments.nearby_vehicles)
-    plot_coordinates(carla_ego_dataframe, ego_title="hero")
+    carla_ego_dataframe = filter_by_column(all_dataframe, "Role", arguments.ego_name)
+    plot_coordinates_individual(carla_ego_dataframe, title=arguments.ego_name, linewidth=0.5)
+
+    # Plot the nearby vehicles
+    nearby_vehicles_dataframe = filter_carla_id_by_lowest_distances(nearby_dataframe, arguments.nearby_vehicles)
+    nearby_vehicles_ids = __get_nearby_carla_ids(nearby_vehicles_dataframe, arguments.nearby_vehicles)
+    # print(nearby_vehicles_ids)
+    for carla_id in nearby_vehicles_ids:
+        nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
+        plot_coordinates_individual(nearby_vehicle_dataframe, title=carla_id, color=PlotColor.get_random_color())
 
 
 
@@ -42,6 +50,12 @@ if __name__ == "__main__":
         type=int,
         help="number of vehicles nearby to plot",
         default=3,
+    )
+    argparser.add_argument(
+        "--ego-name",
+        type=str,
+        help="name of the ego vehicle, g.e. hero",
+        default="ego",
     )
     arguments = argparser.parse_args()
 
