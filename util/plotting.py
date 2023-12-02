@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plotter
-from util.color import PlotColor
+from util.color import PlotColor, get_random_color
 from loguru import logger
 from util.physics import calculate_total_distance
 from util.filter import filter_by_column, get_lowest_time
@@ -26,9 +26,9 @@ def plot_coordinates_individual(
     Returns:
     None
     """
+    plot_title = title.upper() if isinstance(title, str) else title
     logger.warning("Start plotting for {} vehicle journey".format(plot_title))
 
-    plot_title = title.upper() if isinstance(title, str) else title
     logger.info("Retrieving values for: {} and {}".format(x_key, y_key))
     x = df[x_key]
     y = df[y_key]
@@ -71,7 +71,7 @@ def nearby_individual_plotting(all_dataframe, nearby_vehicles_ids):
     for carla_id in nearby_vehicles_ids:
         nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
         plot_coordinates_individual(
-            nearby_vehicle_dataframe, title=carla_id, color=PlotColor.get_random_color()
+            nearby_vehicle_dataframe, title=carla_id, color=get_random_color()
         )
 
 
@@ -196,7 +196,7 @@ def plot_all_nearby_vehicles(
         # Select a record based on a specific value in a column
         selected_record = nearby_dataframe.loc[nearby_dataframe["CarlaId"] == carla_id]
 
-        color_nearby = PlotColor.get_random_color()
+        color_nearby = get_random_color()
 
         plotter.plot(nearby_x, nearby_y, label=carla_id, color=color_nearby)
         plotter.plot(
