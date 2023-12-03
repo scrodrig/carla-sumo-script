@@ -14,6 +14,13 @@ To install the plot-generator package, you can use pip:
 $ pip install -r requirements.txt
 ```
 
+## IMPORTANT:
+It's important to add those two folders, otherwise the script could break
+
+```sh
+$ mkdir input && mkdir output
+```
+
 ## Usage:
 
 It needs two `.csv` files, to start, those should be placed in `{PROJECT_ROOT}/input`
