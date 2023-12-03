@@ -65,3 +65,14 @@ Run the script:
 ```sh
 $  python ./plot-generator.py --csv-file testCarla2Sumo.csv --nearby-csv-file nearbyVehicles.csv --nearby-vehicles 3 --ego-name hero
 ```
+
+Finally, you should have some plots like these ones:
+
+
+![HERO](https://github.com/scrodrig/carla-sumo-script/assets/5466692/9815ee58-d9d5-4ad5-9db7-d55b486622ac)
+
+
+![hero-carla_ids](https://github.com/scrodrig/carla-sumo-script/assets/5466692/8e5f2f41-5584-4e08-bae2-3dd7051601dd)
+
+
+
