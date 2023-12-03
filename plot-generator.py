@@ -28,12 +28,12 @@ def main():
     Returns:
         None
     """
-    logger.critical("Carla-Sumo - Script plot generation")
+    logger.critical("Carla-Sumo - Script plot generation started {}".format(arguments.show_plot))
     all_dataframe = load_dataset(arguments.csv_file)
     nearby_dataframe = load_dataset(arguments.nearby_csv_file, event_file=False)
     carla_ego_dataframe = filter_by_column(all_dataframe, "Role", arguments.ego_name)
     plot_coordinates_individual(
-        carla_ego_dataframe, title=arguments.ego_name, linewidth=0.5
+        carla_ego_dataframe, title=arguments.ego_name, linewidth=0.5, show_plot=arguments.show_plot
     )
 
     # Plot the nearby vehicles
@@ -44,7 +44,7 @@ def main():
         nearby_vehicles_dataframe, arguments.nearby_vehicles
     )
     if arguments.nearby_individual_plotting:
-        nearby_individual_plotting(all_dataframe, nearby_vehicles_ids)
+        nearby_individual_plotting(all_dataframe, nearby_vehicles_ids, show_plot=arguments.show_plot)
 
     if arguments.nearby_ego_plotting:
         plot_nearby_individual_vehicles(
@@ -54,6 +54,7 @@ def main():
             ego_name=arguments.ego_name,
             nearby_dataframe=nearby_vehicles_dataframe,
             nearby_vehicles_ids=nearby_vehicles_ids,
+            show_plot=arguments.show_plot,
         )
 
     plot_all_nearby_vehicles(
@@ -63,6 +64,7 @@ def main():
         ego_name=arguments.ego_name,
         nearby_dataframe=nearby_vehicles_dataframe,
         nearby_vehicles_ids=nearby_vehicles_ids,
+        show_plot=arguments.show_plot,
     )
 
     logger.warning("Monitor file creation")
@@ -114,6 +116,12 @@ if __name__ == "__main__":
         type=bool,
         help="Need to see the individual plotting for nearby vehicles with ego?",
         default=False,
+    )
+    argparser.add_argument(
+        "--show-plot",
+        help="Want to see the plot?",
+        default=True,
+        action='store_false'
     )
     argparser.add_argument(
         "--file-name",

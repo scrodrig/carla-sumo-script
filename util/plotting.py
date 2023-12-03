@@ -4,7 +4,7 @@ from loguru import logger
 from util.physics import calculate_total_distance
 from util.filter import filter_by_column, get_lowest_time
 from util.converters import convert_seconds
-from util.stats import seconds_difference
+from pathlib import Path
 
 
 def plot_coordinates_individual(
@@ -14,6 +14,7 @@ def plot_coordinates_individual(
     title="ego",
     color=PlotColor.DODGERBLUE,
     linewidth=1.0,
+    show_plot=True,
 ):
     """
     Plots the x and y coordinates from a given data frame.
@@ -54,11 +55,14 @@ def plot_coordinates_individual(
     # Set the line width and color
     plotter.plot(x, y, linewidth=linewidth, color=color)
 
-    plotter.show()
+    
+    __save_fig(file_name="{}.png".format(plot_title))
+    if show_plot:
+        plotter.show()
     logger.warning("End plotting for {} vehicle journey".format(plot_title))
 
 
-def nearby_individual_plotting(all_dataframe, nearby_vehicles_ids):
+def nearby_individual_plotting(all_dataframe, nearby_vehicles_ids, show_plot=True):
     """
     Plot individual nearby vehicles based on their CarlaId.
 
@@ -72,7 +76,7 @@ def nearby_individual_plotting(all_dataframe, nearby_vehicles_ids):
     for carla_id in nearby_vehicles_ids:
         nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
         plot_coordinates_individual(
-            nearby_vehicle_dataframe, title=carla_id, color=get_random_color()
+            nearby_vehicle_dataframe, title=carla_id, color=get_random_color(), show_plot=show_plot
         )
 
 
@@ -86,6 +90,7 @@ def plot_nearby_individual_vehicles(
     color_ego=PlotColor.DODGERBLUE,
     color_nearby=PlotColor.RED,
     linewidth=1.0,
+    show_plot=True,
 ):
     """
     Plots the journey of nearby individual vehicles.
@@ -149,7 +154,9 @@ def plot_nearby_individual_vehicles(
         )
         logger.info("Closest point at {:.0f}:{:.2f} min".format(minutes, seconds))
         plotter.legend()
-        plotter.show()
+        __save_fig(file_name="{}-{}.png".format(ego_name, carla_id))
+        if show_plot:
+            plotter.show()
         logger.warning(
             "End plotting for {} - {} vehicle journey".format(ego_name, carla_id)
         )
@@ -164,6 +171,7 @@ def plot_all_nearby_vehicles(
     nearby_vehicles_ids=[],
     nearby_dataframe=None,
     color_ego=PlotColor.DODGERBLUE,
+    show_plot=True,
 ):
     """
     Plot the journey of the ego vehicle and all nearby vehicles.
@@ -211,8 +219,25 @@ def plot_all_nearby_vehicles(
 
     plotter.title("All nearby vehicles")
     plotter.legend()
-    plotter.show()
+    __save_fig(file_name="{}-{}.png".format(ego_name, "carla_ids"))
+    if show_plot:
+        plotter.show()
     logger.warning("End plotting for ALL nearby vehicles journey")
 
 
+def __save_fig(file_name="test.png"):
+    """
+    Save the current figure.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    HERE = Path(__file__).parent.parent
+    OUTPUT_FOLDER = HERE / "output"
+    file_path = OUTPUT_FOLDER / file_name
+    plotter.savefig(file_path, transparent=True)
+    logger.debug("Figure saved")
 
