@@ -87,12 +87,24 @@ def write_to_txt(
 
         for carla_id in nearby_vehicles_ids:
 
-            nearby_distance = calculate_total_distance(nearby_vehicles_dataframe)
+            nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
+
+            nearby_distance = calculate_total_distance(nearby_vehicle_dataframe)
             file.write(
                 "Total distance traveled by {}: {:.2f} meters \n".format(
                     carla_id, nearby_distance
                 )
             )
+
+
+            nearby_velocity = average_velocity(nearby_vehicle_dataframe)
+
+            file.write(
+                "Average velocity {}: {:.2f} m/s \n".format(
+                    carla_id, nearby_velocity
+                )
+            )
+
             file.write(
                 f"------------------------------------------------------------\n"
             )
