@@ -69,6 +69,7 @@ def write_to_txt(
                 ].to_latex()
             )
         )
+        file.write(f"************************END LATEX*************************\n\n")
 
         file.write(f"------------------------------------------------------------\n")
         ego_distance = calculate_total_distance(carla_ego_dataframe)
@@ -86,7 +87,6 @@ def write_to_txt(
             )
         )
 
-        file.write(f"************************END LATEX*************************\n\n")
         file.write(f"------------------------------------------------------------\n")
 
         for carla_id in nearby_vehicles_ids:
