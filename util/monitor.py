@@ -22,9 +22,13 @@ def write_to_txt(
 
     with open(file_path, "w") as file:
         file.write(f"*********************************************************\n")
-        file.write(f"********************File name: {file_name}****************\n")
+        file.write(f"******************  File name: {file_name}  **************\n")
         file.write(f"**********************************************************\n")
-        file.write(f"Report \n")
+        file.write(f"--------------------------------------------------------\n")
+        file.write(f"--------------------------------------------------------\n")
+         file.write(f"*********************************************************\n")
+        file.write(f"*************************  REPORT  *********************\n")
+        file.write(f"**********************************************************\n")
 
         file.write(f"--------------------------------------------------------\n")
 
@@ -82,8 +86,8 @@ def write_to_txt(
             )
         )
 
+        file.write(f"************************END LATEX*************************\n\n")
         file.write(f"------------------------------------------------------------\n")
-
 
         for carla_id in nearby_vehicles_ids:
 
@@ -115,11 +119,14 @@ def write_to_txt(
             closest_record = closest_point(
                 ergo_dataframe=carla_ego_dataframe, nearby_record=nearby_vehicle
             )
+            
+            file.write(f"****************************LATEX*************************\n\n")
             file.write(
                 "Closest record between {} - {}: \n{} \n".format(
                     ego_name, carla_id, closest_record.to_latex()
                 )
             )
+            file.write(f"************************END LATEX*************************\n\n")
             miliseconds = seconds_difference_delay(closest_record.iloc[0], last_record=nearby_vehicle.iloc[0])
             file.write("Co-simulation delay {:.3f} ms \n".format(miliseconds))
             file.write(
