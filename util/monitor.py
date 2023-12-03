@@ -4,7 +4,7 @@ from util.converters import convert_seconds
 
 from util.filter import filter_by_column, __get_nearby_carla_ids
 from util.physics import calculate_total_distance
-from util.stats import closest_point, number_of_records, seconds_difference, seconds_difference_delay
+from util.stats import average_velocity, closest_point, number_of_records, seconds_difference, seconds_difference_delay
 
 
 def write_to_txt(
@@ -73,7 +73,17 @@ def write_to_txt(
                 ego_name, ego_distance
             )
         )
+
+        ego_velocity = average_velocity(carla_ego_dataframe)
+
+        file.write(
+            "Average velocity {}: {:.2f} m/s \n".format(
+                ego_name, ego_velocity
+            )
+        )
+
         file.write(f"------------------------------------------------------------\n")
+
 
         for carla_id in nearby_vehicles_ids:
 
