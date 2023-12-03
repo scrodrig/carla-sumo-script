@@ -1,4 +1,5 @@
 import argparse
+from util.monitor import write_to_txt
 from util.reader import load_dataset
 from loguru import logger
 from util.filter import (
@@ -64,6 +65,19 @@ def main():
         nearby_vehicles_ids=nearby_vehicles_ids,
     )
 
+    logger.warning("Monitor file creation")
+
+    write_to_txt(
+        arguments.file_name,
+        all_dataframe=all_dataframe,
+        ego_name=arguments.ego_name,
+        nearby_vehicles_dataframe=nearby_vehicles_dataframe,
+    )
+
+    logger.warning("END Monitor file creation")
+
+    logger.critical("Carla-Sumo - End of Script plot generation")
+
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description=__doc__)
@@ -100,6 +114,12 @@ if __name__ == "__main__":
         type=bool,
         help="Need to see the individual plotting for nearby vehicles with ego?",
         default=False,
+    )
+    argparser.add_argument(
+        "--file-name",
+        type=str,
+        help="Output file name",
+        default="results.txt",
     )
     arguments = argparser.parse_args()
 

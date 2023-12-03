@@ -4,6 +4,7 @@ from loguru import logger
 from util.physics import calculate_total_distance
 from util.filter import filter_by_column, get_lowest_time
 from util.converters import convert_seconds
+from util.stats import seconds_difference
 
 
 def plot_coordinates_individual(
