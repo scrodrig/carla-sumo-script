@@ -31,6 +31,9 @@ def plot_coordinates_individual(
     plot_title = title.upper() if isinstance(title, str) else title
     logger.warning("Start plotting for {} vehicle journey".format(plot_title))
 
+    logger.warning("Clearin the plotter")
+    plotter.clf()
+
     logger.info("Retrieving values for: {} and {}".format(x_key, y_key))
     x = df[x_key]
     y = df[y_key]
@@ -54,8 +57,8 @@ def plot_coordinates_individual(
 
     # Set the line width and color
     plotter.plot(x, y, linewidth=linewidth, color=color)
+    # plotter.legend()
 
-    
     __save_fig(file_name="{}.png".format(plot_title))
     if show_plot:
         plotter.show()
@@ -76,7 +79,10 @@ def nearby_individual_plotting(all_dataframe, nearby_vehicles_ids, show_plot=Tru
     for carla_id in nearby_vehicles_ids:
         nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
         plot_coordinates_individual(
-            nearby_vehicle_dataframe, title=carla_id, color=get_random_color(), show_plot=show_plot
+            nearby_vehicle_dataframe,
+            title=carla_id,
+            color=get_random_color(),
+            show_plot=show_plot,
         )
 
 
@@ -115,6 +121,8 @@ def plot_nearby_individual_vehicles(
         logger.warning(
             "Start sub-plotting for {} - {} vehicle journey".format(ego_name, carla_id)
         )
+        logger.warning("Clearin the plotter")
+        plotter.clf()
         logger.info(
             "Retrieving values for: {} and {} in {}".format(x_key, y_key, ego_name)
         )
@@ -138,6 +146,8 @@ def plot_nearby_individual_vehicles(
             )
         )
 
+        plotter.plot(x, y, label=ego_name, color=color_ego)
+        plotter.plot(nearby_x, nearby_y, label=carla_id, color=color_nearby)
         plotter.plot(
             selected_record.iloc[0]["Carla X"],
             selected_record.iloc[0]["Carla Y"],
@@ -145,10 +155,8 @@ def plot_nearby_individual_vehicles(
             marker="o",
             markersize=5,
             markeredgecolor=PlotColor.BLACK,
-            markerfacecolor=PlotColor.GREEN,
+            markerfacecolor=color_nearby,
         )
-        plotter.plot(x, y, label=ego_name, color=color_ego)
-        plotter.plot(nearby_x, nearby_y, label=carla_id, color=color_nearby)
         plotter.title(
             "Closest point at {:.0f}:{:.2f} min".format(minutes, seconds), fontsize=8
         )
@@ -188,6 +196,8 @@ def plot_all_nearby_vehicles(
     logger.warning("Start plotting for ALL nearby vehicles journey")
     logger.info("Retrieving values for: {} and {} in {}".format(x_key, y_key, ego_name))
     carla_ego_dataframe = filter_by_column(df, "Role", ego_name)
+    logger.warning("Clearin the plotter")
+    plotter.clf()
 
     logger.info("Retrieving values for: {} and {} in {}".format(x_key, y_key, ego_name))
     x = carla_ego_dataframe[x_key]
@@ -201,6 +211,7 @@ def plot_all_nearby_vehicles(
         nearby_vehicle_dataframe = filter_by_column(df, "CarlaId", carla_id)
         nearby_x = nearby_vehicle_dataframe[x_key]
         nearby_y = nearby_vehicle_dataframe[y_key]
+       
 
         # Select a record based on a specific value in a column
         selected_record = nearby_dataframe.loc[nearby_dataframe["CarlaId"] == carla_id]
@@ -240,4 +251,3 @@ def __save_fig(file_name="test.png"):
     file_path = OUTPUT_FOLDER / file_name
     plotter.savefig(file_path, transparent=True)
     logger.debug("Figure saved")
-

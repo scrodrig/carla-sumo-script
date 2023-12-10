@@ -71,6 +71,7 @@ def main():
 
     write_to_txt(
         arguments.file_name,
+        nearby_dataframe=nearby_dataframe,
         all_dataframe=all_dataframe,
         ego_name=arguments.ego_name,
         nearby_vehicles_dataframe=nearby_vehicles_dataframe,

@@ -4,12 +4,20 @@ from util.converters import convert_seconds
 
 from util.filter import filter_by_column, __get_nearby_carla_ids
 from util.physics import calculate_total_distance
-from util.stats import average_velocity, closest_point, number_of_records, seconds_difference, seconds_difference_delay
+from util.stats import (
+    average_velocity,
+    closest_point,
+    number_of_records,
+    seconds_difference,
+    seconds_difference_delay,
+    unique_carlaId_records,
+)
 
 
 def write_to_txt(
     file_name,
     all_dataframe,
+    nearby_dataframe,
     nearby_vehicles_dataframe,
     ego_name="ego",
     nearby_vehicles=3,
@@ -35,6 +43,12 @@ def write_to_txt(
         number_rows = number_of_records(all_dataframe)
         file.write(f"Number of records all: {number_rows}\n")
 
+        all_ids_number = unique_carlaId_records(all_dataframe)
+        file.write(f"Number of vehicles all: {all_ids_number}\n")
+
+        all_nearby_number = unique_carlaId_records(nearby_dataframe)
+        file.write(f"Number of vehicles nearby: {all_nearby_number}\n")
+
         carla_ego_dataframe = filter_by_column(all_dataframe, "Role", ego_name)
         file.write(
             f"Number of records of {ego_name}: {number_of_records(carla_ego_dataframe)}\n"
@@ -56,8 +70,15 @@ def write_to_txt(
             nearby_vehicles_dataframe, nearby_vehicles
         )
         file.write(
-            "Nearby vehicles to {}, are {} \n".format(
+            "Closest nearby vehicles to {}, are {} \n".format(
                 ego_name.capitalize(), nearby_vehicles_ids
+            )
+        )
+
+        all_nearby_vehicles_ids = __get_nearby_carla_ids(nearby_dataframe)
+        file.write(
+            "All nearby vehicles to {}, are {} \n".format(
+                ego_name.capitalize(), all_nearby_vehicles_ids
             )
         )
         file.write(f"****************************LATEX*************************\n\n")
@@ -66,6 +87,23 @@ def write_to_txt(
             "{}\n".format(
                 nearby_vehicles_dataframe[
                     ["CarlaId", "Name", "Role", "Distance", "time"]
+                ].to_latex()
+            )
+        )
+        file.write(f"****************************LATEX*************************\n\n")
+        file.write(
+            "{}\n".format(
+                nearby_vehicles_dataframe[
+                    [
+                        "CarlaId",
+                        "Name",
+                        "Role",
+                        "Carla X",
+                        "Carla Y",
+                        "Carla Z",
+                        "Distance",
+                        "time",
+                    ]
                 ].to_latex()
             )
         )
@@ -81,17 +119,14 @@ def write_to_txt(
 
         ego_velocity = average_velocity(carla_ego_dataframe)
 
-        file.write(
-            "Average velocity {}: {:.2f} m/s \n".format(
-                ego_name, ego_velocity
-            )
-        )
+        file.write("Average velocity {}: {:.2f} m/s \n".format(ego_name, ego_velocity))
 
         file.write(f"------------------------------------------------------------\n")
 
         for carla_id in nearby_vehicles_ids:
-
-            nearby_vehicle_dataframe = filter_by_column(all_dataframe, "CarlaId", carla_id)
+            nearby_vehicle_dataframe = filter_by_column(
+                all_dataframe, "CarlaId", carla_id
+            )
 
             nearby_distance = calculate_total_distance(nearby_vehicle_dataframe)
             file.write(
@@ -100,13 +135,10 @@ def write_to_txt(
                 )
             )
 
-
             nearby_velocity = average_velocity(nearby_vehicle_dataframe)
 
             file.write(
-                "Average velocity {}: {:.2f} m/s \n".format(
-                    carla_id, nearby_velocity
-                )
+                "Average velocity {}: {:.2f} m/s \n".format(carla_id, nearby_velocity)
             )
 
             file.write(
@@ -119,15 +151,21 @@ def write_to_txt(
             closest_record = closest_point(
                 ergo_dataframe=carla_ego_dataframe, nearby_record=nearby_vehicle
             )
-            
-            file.write(f"****************************LATEX*************************\n\n")
+
+            file.write(
+                f"****************************LATEX*************************\n\n"
+            )
             file.write(
                 "Closest record between {} - {}: \n{} \n".format(
                     ego_name, carla_id, closest_record.to_latex()
                 )
             )
-            file.write(f"************************END LATEX*************************\n\n")
-            miliseconds = seconds_difference_delay(closest_record.iloc[0], last_record=nearby_vehicle.iloc[0])
+            file.write(
+                f"************************END LATEX*************************\n\n"
+            )
+            miliseconds = seconds_difference_delay(
+                closest_record.iloc[0], last_record=nearby_vehicle.iloc[0]
+            )
             file.write("Co-simulation delay {:.3f} ms \n".format(miliseconds))
             file.write(
                 f"------------------------------------------------------------\n"

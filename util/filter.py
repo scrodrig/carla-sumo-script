@@ -57,7 +57,7 @@ def filter_carla_id_by_lowest_distances(df, num_records):
     return filtered_df
 
 
-def __get_nearby_carla_ids(df, num_records):
+def __get_nearby_carla_ids(df, num_records=-1):
     """
     Get the unique CarlaIDs for the nearby vehicles based on the filtered DataFrame.
 
@@ -69,6 +69,8 @@ def __get_nearby_carla_ids(df, num_records):
       numpy.ndarray: An array of unique CarlaIDs for the nearby vehicles.
 
     """
+    if num_records == -1:
+        return df["CarlaId"].unique()
     unique_carla_ids = (
         df.groupby("CarlaId").head(num_records)["CarlaId"].unique()
     )

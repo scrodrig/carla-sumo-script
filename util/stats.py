@@ -42,3 +42,6 @@ def average_velocity(pd_dataframe):
     seconds = seconds_difference(pd_dataframe)
     return distance / seconds
 
+
+def unique_carlaId_records(pd_dataframe):
+    return pd_dataframe["CarlaId"].nunique()
